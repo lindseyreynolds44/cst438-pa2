@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>City Info</title>
+</head>
+<body>
+
+	<h2> City Information </h2>
+	
+	ID &emsp; &emsp; &emsp; &emsp; 
+	<span th:inline="text"> [[${cityInfo.getCity().getID()}]] </span> <br />
+	
+	Name &emsp; &emsp; &emsp; 
+	<span th:inline="text"> [[${cityInfo.getCity().getName()}]] </span> <br />
+	
+	Country Code &emsp; 
+	<span th:inline="text"> [[${cityInfo.getCountry().getCode()}]] </span> <br />
+	
+	District &emsp; &emsp; &emsp; 
+	<span th:inline="text"> [[${cityInfo.getCity().getDistrict()}]] </span> <br />
+	
+	Population &emsp; &emsp; 
+	<span th:inline="text"> [[${cityInfo.getCity().getPopulation()}]] </span> <br />
+	
+	Local Weather &emsp; 
+	<span th:inline="text"> [[${cityInfo.getTempAndTime().getTemp()}]] </span> <br />
+	
+	Local Time &emsp; &emsp; 
+	<span th:inline="text"> [[${cityInfo.getTempAndTime().getTime()}]] </span> <br />
+	
+	
+		
+
+</body>
+</html>
