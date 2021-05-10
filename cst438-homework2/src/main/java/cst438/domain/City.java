@@ -46,10 +46,6 @@ public class City {
     this.name = name;
   }
 
-  public String getCountryCode() {
-    return country.getCode();
-  }
-
   public String getDistrict() {
     return district;
   }
@@ -111,7 +107,5 @@ public class City {
     return "City [ID=" + ID + ", name=" + name + ", district=" + district + ", population="
         + population + ", country=" + country + "]";
   }
-
-
 
 }

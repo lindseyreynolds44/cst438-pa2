@@ -17,22 +17,30 @@ public class WeatherService {
   private String weatherUrl;
   private String apiKey;
 
-  public WeatherService( // 1
-      @Value("${weather.url}") final String weatherUrl,
+  public WeatherService(@Value("${weather.url}") final String weatherUrl,
       @Value("${weather.apikey}") final String apiKey) {
     this.restTemplate = new RestTemplate();
     this.weatherUrl = weatherUrl;
     this.apiKey = apiKey;
   }
 
+  /**
+   * Call the weather service API to get weather data about a city
+   * 
+   * @param cityName
+   * @return TempAndTime
+   */
   public TempAndTime getTempAndTime(String cityName) {
     ResponseEntity<JsonNode> response = restTemplate
         .getForEntity(weatherUrl + "?q=" + cityName + "&appid=" + apiKey, JsonNode.class);
-    JsonNode json = response.getBody(); // 2
+    JsonNode json = response.getBody();
     log.info("Status code from weather server:" + response.getStatusCodeValue());
+
+    // Get information from the json response
     double temp = json.get("main").get("temp").asDouble();
     long time = json.get("dt").asLong();
     int timezone = json.get("timezone").asInt();
+
     return new TempAndTime(temp, time, timezone);
   }
 }

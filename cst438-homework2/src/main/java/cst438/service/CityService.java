@@ -14,23 +14,33 @@ import cst438.domain.TempAndTime;
 public class CityService {
 
   @Autowired
-  private CityRepository cityRepository;
+  CityRepository cityRepository;
   @Autowired
-  private CountryRepository countryRepository;
+  CountryRepository countryRepository;
   @Autowired
-  private WeatherService weatherService;
+  WeatherService weatherService;
+
+  public CityService(CityRepository cityRepository, CountryRepository countryRepository,
+      WeatherService weatherService) {
+    this.cityRepository = cityRepository;
+    this.countryRepository = countryRepository;
+    this.weatherService = weatherService;
+
+  }
 
   public CityInfo getCityInfo(String cityName) {
 
     // look up city info from database. Might be multiple cities with same name.
     List<City> cities = cityRepository.findByName(cityName);
 
+    // If this city is not in the database, return null
     if (cities.size() == 0) {
       return null;
     }
 
+    // Get the first instance of this city returned from the database
     City city = cities.get(0);
-    Country country = countryRepository.findByCode(city.getCountryCode());
+    Country country = city.getCountry();
     TempAndTime tempTime = weatherService.getTempAndTime(cityName);
 
     CityInfo info = new CityInfo(city, country, tempTime);

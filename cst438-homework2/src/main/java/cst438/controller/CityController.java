@@ -14,11 +14,13 @@ public class CityController {
   @Autowired
   private CityService cityService;
 
-  @GetMapping("/index")
-  public String displayLandingPage(Model model) {
-    return "index";
-  }
-
+  /**
+   * Display the city that the user searched for
+   * 
+   * @param cityName
+   * @param model
+   * @return html template to display the city info
+   */
   @GetMapping("/cities/{city}")
   public String getCityInfo(@PathVariable("city") String cityName, Model model) {
 

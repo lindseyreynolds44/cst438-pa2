@@ -10,7 +10,8 @@ public class TempAndTime {
   private double temp;
   private long time;
   private int timezone;
-  private final int OFFSET = 7200000;
+
+  public TempAndTime() {}
 
   public TempAndTime(double temp, long time, int timezone) {
     this.temp = temp;
@@ -18,25 +19,19 @@ public class TempAndTime {
     this.timezone = timezone;
   }
 
-  public String getTemp() {
-    temp = (temp - 273.15) * 9.0 / 5.0 + 32.0;
+  public String getTempFahrenheit() {
+    double convertedTemp = (temp - 273.15) * 9.0 / 5.0 + 32.0;
     DecimalFormat df = new DecimalFormat("#.##");
-    String tempStr = df.format(temp) + " °F";
+    String tempStr = df.format(convertedTemp) + " F";
     return tempStr;
+  }
+
+  public double getTemp() {
+    return temp;
   }
 
   public void setTemp(double temp) {
     this.temp = temp;
-  }
-
-  public String getTime() {
-    time = time - OFFSET;
-    Date date = new Date(time);
-    DateFormat sdf = new SimpleDateFormat("h:mm a");
-    TimeZone tz = TimeZone.getTimeZone("UTC");
-    tz.setRawOffset(timezone * 1000);
-    sdf.setTimeZone(tz);
-    return sdf.format(date);
   }
 
   public void setTime(long time) {
@@ -50,4 +45,19 @@ public class TempAndTime {
   public void setTimezone(int timezone) {
     this.timezone = timezone;
   }
+
+  public long getTime() {
+    return time;
+  }
+
+  public String getTimeFormatted() {
+    Date date = new Date(time * 1000);
+    DateFormat sdf = new SimpleDateFormat("h:mm a");
+    TimeZone tz = TimeZone.getTimeZone("UTC");
+    tz.setRawOffset(timezone * 1000);
+    sdf.setTimeZone(tz);
+    return sdf.format(date);
+
+  }
+
 }
