@@ -67,6 +67,8 @@ public class CityRestControllerTest {
 
     // compare actual return data with expected data
     assertThat(actualResult).isEqualTo(expectedResult);
+    assertThat(actualResult.getTime()).isEqualTo("3:14 PM");
+    assertThat(actualResult.getTemp()).isEqualTo("59.18 F");
   }
 
 
@@ -98,6 +100,9 @@ public class CityRestControllerTest {
 
     // compare actual return data with expected data
     assertThat(actualResult).isEqualTo(expectedResult);
+    assertThat(actualResult.getTime()).isEqualTo("1:39 PM");
+    assertThat(actualResult.getTemp()).isEqualTo("68.95 F");
+
   }
 
   /**
