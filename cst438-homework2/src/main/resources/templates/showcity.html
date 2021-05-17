@@ -38,6 +38,30 @@
 		  <td th:inline="text">[[${cityInfo.getTime()}]]</td>
 		</tr>
 	</table>	
+	
+	
+	<div>
+		<h5 th:inline="text">For a weekend away in [[${cityInfo.getCity().getName()}]], sign up here:</h5><br>
+		
+		<form action="#" th:action="@{/cities/reservation}" method="post">
+		
+			<input type="hidden" id="city" name="city" th:value="*{cityInfo.getCity().getName()}" />
+		
+			<label for="email">Email </label>
+  			<input type="text" id="email" name="email" required><br>
+  			
+  			<input type="radio" id="luxury" name="level" value="luxury">
+			<label for="luxury">Luxury</label><br>
+			<input type="radio" id="moderate" name="level" value="moderate">
+			<label for="moderate">Moderate</label><br>
+			<input type="radio" id="budget" name="level" value="budget">
+			<label for="budget">Budget</label><br>
+			
+			<input type="submit" value="Submit">
+		</form>
+		
+		
+	</div>
 
 </body>
 </html>

@@ -8,6 +8,8 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockitoAnnotations;
+import org.springframework.amqp.core.FanoutExchange;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import cst438.domain.City;
@@ -29,6 +31,11 @@ public class CityServiceTest {
 
   @MockBean
   private CountryRepository countryRepository;
+
+  @MockBean
+  private RabbitTemplate rabbitTemplate;
+  @MockBean
+  private FanoutExchange fanout;
 
   private CityService cs;
 
@@ -55,7 +62,7 @@ public class CityServiceTest {
 
 
     // We will test this CityService object
-    cs = new CityService(cityRepository, countryRepository, weatherService);
+    cs = new CityService(cityRepository, countryRepository, weatherService, rabbitTemplate, fanout);
 
     // Create MOCKs in order to test the getCityInfo method
     given(weatherService.getTempAndTime("New York")).willReturn(tempTime);
@@ -80,25 +87,33 @@ public class CityServiceTest {
   public void test_manyCities() {
 
     // Set up information in order to create MOCKS
-    Country country = new Country("CHL", "Chile");
-    City city = new City(568, "Los Angeles", "Bíobío", 158215, country);
     List<City> cities = new ArrayList<City>();
-    cities.add(city);
+
+    Country country1 = new Country("CHL", "Chile");
+    City city1 = new City(568, "Los Angeles", "Biobio", 158215, country1);
+    cities.add(city1);
+
+    Country country2 = new Country("USA", "United States");
+    City city2 = new City(493, "Los Angeles", "Los Angeles", 267382, country2);
+    cities.add(city2);
+
     TempAndTime tempTime = new TempAndTime(293.68, 1620592785, -25200);
+    CityInfo cityInfo = new CityInfo(city1, country1, tempTime);
+
 
     // We will test this CityService object
-    cs = new CityService(cityRepository, countryRepository, weatherService);
+    cs = new CityService(cityRepository, countryRepository, weatherService, rabbitTemplate, fanout);
 
     // Create MOCKs in order to test the getCityInfo method
     given(weatherService.getTempAndTime("Los Angeles")).willReturn(tempTime);
     given(cityRepository.findByName("Los Angeles")).willReturn(cities);
-    given(countryRepository.findByCode("CHL")).willReturn(country);
+    given(countryRepository.findByCode("CHL")).willReturn(country1);
 
     // Test the getCityInfo method in CityService class
     CityInfo actualCityInfo = cs.getCityInfo("Los Angeles");
 
     // Create Expected results
-    CityInfo expectedCityInfo = new CityInfo(city, country, tempTime);
+    CityInfo expectedCityInfo = new CityInfo(city1, country1, tempTime);
 
     // Check that expected matches actual
     assertEquals(actualCityInfo, expectedCityInfo);
@@ -115,7 +130,7 @@ public class CityServiceTest {
     List<City> cities = new ArrayList<City>();
 
     // We will test this CityService object
-    cs = new CityService(cityRepository, countryRepository, weatherService);
+    cs = new CityService(cityRepository, countryRepository, weatherService, rabbitTemplate, fanout);
 
     // Create MOCKs in order to test the getCityInfo method
     given(cityRepository.findByName("fail")).willReturn(cities);

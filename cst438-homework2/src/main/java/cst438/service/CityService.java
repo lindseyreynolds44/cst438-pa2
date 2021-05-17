@@ -1,6 +1,8 @@
 package cst438.service;
 
 import java.util.List;
+import org.springframework.amqp.core.FanoutExchange;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import cst438.domain.City;
@@ -19,12 +21,19 @@ public class CityService {
   CountryRepository countryRepository;
   @Autowired
   WeatherService weatherService;
+  @Autowired
+  private RabbitTemplate rabbitTemplate;
+  @Autowired
+  private FanoutExchange fanout;
+
 
   public CityService(CityRepository cityRepository, CountryRepository countryRepository,
-      WeatherService weatherService) {
+      WeatherService weatherService, RabbitTemplate rabbitTemplate, FanoutExchange fanout) {
     this.cityRepository = cityRepository;
     this.countryRepository = countryRepository;
     this.weatherService = weatherService;
+    this.rabbitTemplate = rabbitTemplate;
+    this.fanout = fanout;
 
   }
 
@@ -46,6 +55,13 @@ public class CityService {
     CityInfo info = new CityInfo(city, country, tempTime);
 
     return info;
+  }
+
+  public void requestReservation(String cityName, String level, String email) {
+    String msg = "{\"cityName\": \"" + cityName + "\" \"level\": \"" + level + "\" \"email\": \""
+        + email + "\"}";
+    System.out.println("Sending message:" + msg);
+    rabbitTemplate.convertSendAndReceive(fanout.getName(), "", msg);
   }
 }
 
