@@ -8,6 +8,8 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockitoAnnotations;
+import org.springframework.amqp.core.FanoutExchange;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import cst438.domain.City;
@@ -29,6 +31,11 @@ public class CityServiceTest {
 
   @MockBean
   private CountryRepository countryRepository;
+
+  @MockBean
+  private RabbitTemplate rabbitTemplate;
+  @MockBean
+  private FanoutExchange fanout;
 
   private CityService cs;
 
@@ -55,7 +62,7 @@ public class CityServiceTest {
 
 
     // We will test this CityService object
-    cs = new CityService(cityRepository, countryRepository, weatherService);
+    cs = new CityService(cityRepository, countryRepository, weatherService, rabbitTemplate, fanout);
 
     // Create MOCKs in order to test the getCityInfo method
     given(weatherService.getTempAndTime("New York")).willReturn(tempTime);
@@ -87,7 +94,7 @@ public class CityServiceTest {
     TempAndTime tempTime = new TempAndTime(293.68, 1620592785, -25200);
 
     // We will test this CityService object
-    cs = new CityService(cityRepository, countryRepository, weatherService);
+    cs = new CityService(cityRepository, countryRepository, weatherService, rabbitTemplate, fanout);
 
     // Create MOCKs in order to test the getCityInfo method
     given(weatherService.getTempAndTime("Los Angeles")).willReturn(tempTime);
@@ -115,7 +122,7 @@ public class CityServiceTest {
     List<City> cities = new ArrayList<City>();
 
     // We will test this CityService object
-    cs = new CityService(cityRepository, countryRepository, weatherService);
+    cs = new CityService(cityRepository, countryRepository, weatherService, rabbitTemplate, fanout);
 
     // Create MOCKs in order to test the getCityInfo method
     given(cityRepository.findByName("fail")).willReturn(cities);

@@ -28,10 +28,12 @@ public class CityService {
 
 
   public CityService(CityRepository cityRepository, CountryRepository countryRepository,
-      WeatherService weatherService) {
+      WeatherService weatherService, RabbitTemplate rabbitTemplate, FanoutExchange fanout) {
     this.cityRepository = cityRepository;
     this.countryRepository = countryRepository;
     this.weatherService = weatherService;
+    this.rabbitTemplate = rabbitTemplate;
+    this.fanout = fanout;
 
   }
 
